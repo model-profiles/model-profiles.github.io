@@ -44,21 +44,30 @@ button { font:inherit; color:inherit; background:none; border:0; cursor:pointer;
 .wrap { max-width:1260px; margin:0 auto; padding:0 28px; }
 
 .top { display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; padding:26px 0 0; }
+.identity { display:flex; align-items:center; gap:12px; min-width:0; }
+.home { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:40px; padding:8px 12px; border:1px solid var(--rule); border-radius:999px; background:var(--panel); font-size:13px; color:var(--ink-2); }
+.home svg { width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.home:hover { color:var(--ink); border-color:var(--ink-3); }
+.home:focus-visible, .pick summary:focus-visible { outline:2px solid var(--ink); outline-offset:4px; }
 .brand { font-family:var(--serif); font-size:38px; letter-spacing:-.015em; line-height:1; }
-.pick { position:relative; cursor:pointer; outline:none; padding-bottom:6px; margin-bottom:-6px; }   /* hover the title to switch Model / Judge Profiles */
+.pick { position:relative; padding-bottom:6px; margin-bottom:-6px; }
+.pick summary { cursor:pointer; list-style:none; }
+.pick summary::-webkit-details-marker { display:none; }
 .pick .caret { display:inline-block; width:9px; height:9px; margin-left:12px; vertical-align:.18em; border-right:1.5px solid var(--ink-3); border-bottom:1.5px solid var(--ink-3); transform:rotate(45deg); transition:transform .2s; }
-.pick:hover .caret, .pick:focus-within .caret { transform:rotate(225deg) translate(-3px,-3px); }
+.pick[open] .caret { transform:rotate(225deg) translate(-3px,-3px); }
 .pick-menu { position:absolute; left:-10px; top:100%; z-index:30; min-width:calc(100% + 20px); padding:6px; border:1px solid var(--rule); border-radius:12px; background:var(--panel);
   box-shadow:0 14px 34px rgba(0,0,0,.45); opacity:0; visibility:hidden; transform:translateY(-4px); transition:opacity .15s, transform .15s, visibility .15s; }
-.pick:hover .pick-menu, .pick:focus-within .pick-menu { opacity:1; visibility:visible; transform:none; }
+.pick[open] .pick-menu { opacity:1; visibility:visible; transform:none; }
 .pick-menu button { display:block; width:100%; text-align:left; font-family:var(--serif); font-size:26px; letter-spacing:-.015em; color:var(--ink-2); background:none; border:0; border-radius:8px; padding:8px 10px; cursor:pointer; }
 .pick-menu button:hover, .pick-menu button:focus-visible { background:var(--panel-2); color:var(--ink); }
 .ctrls { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
 .seg { display:flex; background:color-mix(in srgb,var(--panel) 80%,transparent); border:1px solid var(--rule); border-radius:999px; padding:3px; }
 .seg button { padding:5px 13px; border-radius:999px; font-size:13px; color:var(--ink-2); transition:background .2s,color .2s; }
+.seg .availability { display:block; font-size:10px; line-height:1.15; opacity:.8; }
 .seg button:hover { color:var(--ink); }
 .seg button:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
 .seg button[aria-pressed="true"] { background:var(--ink); color:var(--bg); }
+:root[data-theme="light"] #theme [data-theme="light"], :root[data-theme="dark"] #theme [data-theme="dark"] { background:var(--ink); color:var(--bg); }
 
 /* the hand */
 .deck { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; padding:58px 0 90px; perspective:1600px; }
@@ -174,6 +183,10 @@ button { font:inherit; color:inherit; background:none; border:0; cursor:pointer;
 .art { margin:0 10px; border-radius:8px; position:relative; overflow:hidden; height:190px; display:grid; place-items:center;
   background:radial-gradient(circle at 50% 50%,color-mix(in srgb,var(--c) 30%,#0b0c0f) 0,color-mix(in srgb,var(--c) 10%,#0b0c0f) 70%);
   box-shadow:0 0 0 1px color-mix(in srgb,var(--c) 30%,transparent) inset; }
+:root[data-theme="light"] .art {
+  --ink:#eceae4; --ink-2:#b3b1ab; --ink-3:#8d8b86; --panel:#15171c;
+  --GPT:#19b386; --Claude:#e07a52; --Gemini:#5b84ff; --Open:#d9a63a;
+}
 .art svg { width:100%; height:100%; display:block; overflow:visible; }
 .art .ring { fill:none; stroke:color-mix(in srgb,var(--c) 28%,transparent); stroke-width:.6; stroke-dasharray:1.5 2.5; }
 .art .pet { fill:var(--c); stroke:color-mix(in srgb,var(--c) 55%,#fff); stroke-width:.5; transform-origin:100px 100px; animation:bloom .9s cubic-bezier(.2,.9,.3,1.2) backwards; }
@@ -352,15 +365,48 @@ button { font:inherit; color:inherit; background:none; border:0; cursor:pointer;
 .pm-p svg { display:block; width:100%; background:var(--panel); border-radius:6px; } .pm-p .t { font-family:var(--mono); font-size:9.5px; fill:var(--ink-2); }
 @media (max-width:900px) { .pm-row { grid-template-columns:150px repeat(2,minmax(0,1fr)) !important; } }
 @media (max-width:700px) { .wr-row { grid-template-columns:0 112px 1fr 30px; column-gap:6px; } .mix-lab { visibility:hidden; } }
+@media (max-width:900px) { .side { position:static; } }
+@keyframes mobile-card-in { from { opacity:0; translate:0 12px; } }
+@media (max-width:700px) {
+  .wrap { padding:0 16px; }
+  .top { gap:16px; padding-top:22px; }
+  .brand { font-size:32px; }
+  .ctrls { width:100%; min-width:0; gap:8px; }
+  .seg { max-width:100%; }
+  .seg button { min-height:44px; padding:7px 11px; }
+  #sec, #judge { display:grid; width:100%; grid-template-columns:repeat(3,minmax(0,1fr)); }
+  #judge { border-radius:18px; }
+  #mode { flex:1; }
+  #mode button { padding:7px 10px; }
+  #theme { flex-shrink:0; }
+  .home { position:fixed; z-index:15; left:calc(16px + env(safe-area-inset-left)); bottom:calc(16px + env(safe-area-inset-bottom)); min-height:44px; padding:10px 14px; box-shadow:0 5px 20px rgba(0,0,0,.18); }
+  .deck { padding:32px 0 88px; row-gap:24px; }
+  .deal-deal .deck .tc, .deal-fan .deck .tc, .deal-drop .deck .tc { animation:mobile-card-in .25s ease-out backwards; animation-delay:calc(var(--d) * .035s); }
+  .detail { gap:24px; padding:24px 0 88px; }
+  .side { position:static; }
+  .spread { grid-template-columns:repeat(auto-fill,minmax(min(100%,148px),1fr)); gap:12px; }
+  .modal { padding:12px; }
+  .pull { max-height:calc(100dvh - 24px); }
+  .pull-head { padding:16px; gap:4px 8px; }
+  .pull-head h2 { font-size:28px; }
+  .x { min-width:44px; min-height:44px; display:grid; place-items:center; margin:-8px -8px 0 0; }
+  .pull-stats { padding:12px 16px; gap:12px; }
+  .pull-stats .bars { gap:6px; }
+}
 @media (prefers-reduced-motion:reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="pick" tabindex="0"><div class="brand"><span id="brand">Model Profiles</span><i class="caret"></i></div><div class="pick-menu" id="page"></div></div>
-    <div class="ctrls"><div class="seg" id="sec"></div><div class="seg" id="judge"></div><div class="seg" id="mode"></div><div class="seg" id="theme" role="group" aria-label="Color theme"><button type="button" data-theme="light" aria-pressed="false">Light</button><button type="button" data-theme="dark" aria-pressed="false">Dark</button></div></div>
+    <div class="identity"><button class="home" type="button" data-home="1" aria-label="Home" title="Back to all model profiles"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5M5 9v11h5v-6h4v6h5V9"/></svg><span>Home</span></button><details class="pick" id="profile-picker"><summary class="brand"><span id="brand">Model Profiles</span><i class="caret"></i></summary><div class="pick-menu" id="page"></div></details></div>
+    <div class="ctrls"><div class="seg" id="sec" role="group" aria-label="Text section"></div><div class="seg" id="judge" role="group" aria-label="Judge"></div><div class="seg" id="mode" role="group" aria-label="Clues shown"></div><div class="seg" id="theme" role="group" aria-label="Color theme"><button type="button" data-theme="light" aria-pressed="false">Light</button><button type="button" data-theme="dark" aria-pressed="false">Dark</button></div></div>
   </header>
+  <script>
+  document.querySelectorAll('#theme [data-theme]').forEach(function (b) {
+    b.setAttribute('aria-pressed', String(b.dataset.theme === document.documentElement.dataset.theme));
+  });
+  </script>
   <main id="main"></main>
 </div>
 <div class="modal" id="modal" hidden></div>
@@ -386,7 +432,8 @@ var SNAME = { holistic: 'Whole text', ideas: 'Ideas', prose: 'Prose' };
 var DOM = { stories: 'story', news: 'news article', opeds: 'op-ed' };
 var GOLD = { OpenAI: 'GPT', Anthropic: 'Claude', Google: 'Gemini' };
 var RAR = { 1: '○', 2: '●', 3: '◆', 4: '★' };
-var st = { sec: 'holistic', view: 'all', open: null, solo: false, right: true, page: 'models', judge: null, fam: 'GPT' };
+function defaultState() { return { sec: 'holistic', view: 'all', open: null, solo: false, right: true, page: 'models', judge: null, fam: 'GPT' }; }
+var st = defaultState();
 var keep = null;   // the Models view's state while the Judges view borrows view/open/right
 
 function setTheme(theme, remember) {
@@ -1130,11 +1177,18 @@ function render() {
   document.getElementById('judge').hidden = document.getElementById('mode').hidden = jp;
   document.getElementById('sec').innerHTML = Object.keys(SNAME).map(function (k) { return '<button data-sec="' + k + '" aria-pressed="' + (st.sec === k) + '">' + SNAME[k] + '</button>'; }).join('');
   document.getElementById('judge').innerHTML = '<button data-view="all" aria-pressed="' + (st.view === 'all') + '">All judges</button>' +
-    J.map(function (j) { return '<button data-view="' + j + '" aria-pressed="' + (st.view === j) + '"' + (JNOTE[j] ? ' title="' + esc(JNOTE[j]) + '"' : '') + '>' + JNAME[j] + '</button>'; }).join('');
+    ((D.sj || {}).holistic || JA).map(function (j) {
+      var available = J.indexOf(j) >= 0;
+      var note = available ? JNOTE[j] : JNAME[j] + ' has Whole text results only; select to switch to Whole text';
+      return '<button data-view="' + j + '" aria-pressed="' + (st.view === j) + '"' + (available ? '' : ' data-view-sec="holistic"') +
+        (note ? ' title="' + esc(note) + '"' : '') + '>' + JNAME[j] + (available ? '' : '<small class="availability">Whole text</small>') + '</button>';
+    }).join('');
   document.getElementById('mode').innerHTML = '<button data-mode="all" aria-pressed="' + !st.right + '" title="Every clue the judges gave">All clues</button>' +
     '<button data-mode="right" aria-pressed="' + st.right + '" title="Only clues from articles the judge named correctly">Right answers only</button>';
   document.getElementById('main').innerHTML = jp ? (st.judge ? jdetail(st.judge) : jdeck()) : st.open ? detail(st.open) : deck();
-  location.replace('#' + (jp ? ['judges', st.sec].concat(st.judge ? [st.judge, st.fam] : []) : [st.open || 'deck', st.sec, st.view].concat(st.right ? ['right'] : [])).join('/'));
+  var isHome = !jp && !st.open && st.sec === 'holistic' && st.view === 'all' && st.right && !st.solo;
+  var hash = isHome ? '' : '#' + (jp ? ['judges', st.sec, st.judge || 'all', st.fam, keep && !keep.right ? 'all-clues' : 'right'] : [st.open || 'deck', st.sec, st.view, st.right ? 'right' : 'all-clues']).join('/');
+  if (location.hash !== hash) history.replaceState(null, '', location.pathname + location.search + hash);
   if (document.querySelectorAll) document.querySelectorAll('.art.words').forEach(function (a) {   // drop the smallest words until the rest fit
     while (a.children.length > 1 && a.scrollHeight > a.clientHeight + 1) a.lastElementChild.remove();
   });
@@ -1143,13 +1197,14 @@ document.addEventListener('click', function (e) {
   if (e.target.id === 'modal') { close(); return; }
   var b = e.target.closest('button'); if (!b) return;
   if (b.dataset.close) close();
+  else if (b.dataset.home) { close(); st = defaultState(); keep = null; document.getElementById('profile-picker').open = false; render(); window.scrollTo(0, 0); }
   else if (b.dataset.sec) { st.sec = b.dataset.sec; render(); }
-  else if (b.dataset.view) { st.view = b.dataset.view; render(); }
+  else if (b.dataset.view) { if (b.dataset.viewSec) st.sec = b.dataset.viewSec; st.view = b.dataset.view; render(); }
   else if (b.dataset.theme) { setTheme(b.dataset.theme, true); }
   else if (b.dataset.mode) { st.right = b.dataset.mode === 'right'; render(); }
   else if (b.dataset.back) { st.open = null; st.solo = false; render(); }
   else if (b.dataset.solo) { st.solo = true; render(); }
-  else if (b.dataset.page) { page(b.dataset.page); render(); window.scrollTo(0, 0); if (document.activeElement) document.activeElement.blur(); }
+  else if (b.dataset.page) { page(b.dataset.page); document.getElementById('profile-picker').open = false; render(); window.scrollTo(0, 0); if (document.activeElement) document.activeElement.blur(); }
   else if (b.dataset.judge) { if (st.judge !== b.dataset.judge) { st.judge = b.dataset.judge; render(); window.scrollTo(0, 0); } }
   else if (b.dataset.fam) { st.fam = b.dataset.fam; render(); }
   else if (b.dataset.jback) { st.judge = null; render(); }
@@ -1160,7 +1215,7 @@ document.addEventListener('click', function (e) {
     if (document.body) document.body.classList.add('lock');
   }
 });
-document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { close(); document.getElementById('profile-picker').open = false; } });
 document.addEventListener('mousemove', function (e) {
   var c = e.target.closest && e.target.closest('.tc, .tt'); if (!c) return;
   var r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height, k = c.classList.contains('tt') ? 0.7 : 1;
@@ -1176,8 +1231,8 @@ if (G.indexOf(h[0]) >= 0) st.open = h[0];
 if (D.sections[h[1]]) st.sec = h[1];
 J = (D.sj || {})[st.sec] || JA;
 if (h[2] === 'all' || J.indexOf(h[2]) >= 0) st.view = h[2];
-if (h[0] === 'deck' || G.indexOf(h[0]) >= 0) st.right = h[3] === 'right';
-if (h[0] === 'judges') { page('judges'); if (J.indexOf(h[2]) >= 0) st.judge = h[2]; if (G.indexOf(h[3]) >= 0) st.fam = h[3]; }
+if ((h[0] === 'deck' || G.indexOf(h[0]) >= 0) && h[3] === 'all-clues') st.right = false;
+if (h[0] === 'judges') { if (h[4] === 'all-clues') st.right = false; page('judges'); if (J.indexOf(h[2]) >= 0) st.judge = h[2]; if (G.indexOf(h[3]) >= 0) st.fam = h[3]; }
 render();
 })();
 </script>
