@@ -574,6 +574,20 @@ body { font-kerning:normal; -webkit-font-smoothing:antialiased; -moz-osx-font-sm
   .seg button::after { left:7px; right:7px; bottom:5px; }
   #theme button { min-width:40px; padding:6px 8px 12px; }
 }
+
+/* ==========================================================================
+   v7: the original's rounded card corners back (the flat-frame restyle had cut
+   them to 9px/3px). Frames, inner panels, art windows, the open-card modal and
+   the trait tiles take the original radii; menus and chips stay square.
+   ========================================================================== */
+.tc, .pull { border-radius:18px; }
+.tc-in, .pull-in { border-radius:12px; }
+.tc-back { border-radius:12px; }
+.tc-back::before { border-radius:8px; }
+.art { border-radius:8px; }
+.tt { border-radius:12px; }
+.tt-in { border-radius:9px; }
+.tile, .wr, .more, .none { border-radius:12px; }
 </style>
 </head>
 <body>
