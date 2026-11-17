@@ -554,6 +554,26 @@ body { font-kerning:normal; -webkit-font-smoothing:antialiased; -moz-osx-font-sm
   #mode button { padding:7px 6px 12px; }
   #theme button { min-width:44px; display:grid; place-items:center; }
 }
+
+/* ==========================================================================
+   v6: phone menu. The section and judge rows were 3-column grids (judges took
+   two rows of wide cells); now each group is one left-aligned line of the same
+   dash buttons as on desktop. Row 1: sections + theme switch; row 2: judges;
+   row 3: All clues / Right answers only (hidden on Judge Profiles). A row that
+   does not fit a narrow phone scrolls sideways instead of wrapping.
+   ========================================================================== */
+@media (max-width:700px) {
+  .ctrls { gap:0 8px; margin-left:0; }
+  #sec { order:1; } #theme { order:2; margin-left:auto; } #judge { order:3; } #mode { order:4; }
+  #sec, #judge, #mode { display:flex; flex-wrap:nowrap; width:auto; max-width:calc(100% + 12px); margin:0 -6px;
+    overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  #sec::-webkit-scrollbar, #judge::-webkit-scrollbar, #mode::-webkit-scrollbar { display:none; }
+  #judge { flex:0 0 calc(100% + 12px); }
+  #mode { flex:0 1 auto; }
+  .seg button, #mode button { flex:none; min-height:42px; padding:6px 7px 12px; font-size:13.5px; }
+  .seg button::after { left:7px; right:7px; bottom:5px; }
+  #theme button { min-width:40px; padding:6px 8px 12px; }
+}
 </style>
 </head>
 <body>
