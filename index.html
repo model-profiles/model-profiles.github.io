@@ -671,6 +671,56 @@ body { font-kerning:normal; -webkit-font-smoothing:antialiased; -moz-osx-font-sm
 .chips button.weak { opacity:.42; border-style:dashed; } .chips button.weak:hover { opacity:.8; }
 .chips .cmpb { margin-left:auto; border-color:transparent; background:none; color:var(--ink-3); opacity:1 !important; } .chips .cmpb::after { content:' →'; }
 @media (max-width:700px) { .chips button { min-height:36px; padding:6px 11px; } }
+
+/* --- prototype: the profile as a read --- */
+.rd { min-width:0; }
+.rd-top { display:flex; align-items:flex-start; gap:18px; padding-bottom:16px; border-bottom:1px solid var(--rule); } .rd-top .rd-line { flex:1; min-width:0; margin:2px 0 0; padding:0; border:0; }
+.rd-lay { display:flex; gap:14px; flex:none; font-size:13px; } .rd-lay button { color:var(--ink-2); font-weight:500; padding:1px 0 4px; border-bottom:2px solid var(--rule); }
+.rd-lay button:hover { color:var(--ink); } .rd-lay button[aria-pressed="true"] { color:var(--ink); font-weight:600; border-bottom-color:var(--ink); }
+.rd.grid .rd-ch { padding-bottom:14px; } .rd.grid .spread { margin:0; }
+.rd-line { display:grid; gap:7px; margin:2px 0 4px; padding-bottom:16px; border-bottom:1px solid var(--rule); font-size:13.5px; }
+.rd-line .row { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 0; }
+.rd-line .lab { flex:0 0 118px; color:var(--ink-3); font-size:12px; font-weight:600; letter-spacing:.02em; }
+.rd-line button.lab:hover { color:var(--ink); }
+.rd-line .m { color:var(--ink-2); padding:1px 0; border-bottom:2px solid transparent; }
+.rd-line .m:hover { color:var(--ink); border-bottom-color:var(--rule); }
+.rd-line .m[aria-pressed="true"] { color:var(--c); font-weight:700; border-bottom-color:var(--c); }
+.rd-line .m[disabled] { color:var(--ink-3); opacity:.5; cursor:default; border:0; }
+.rd-line .m.weak { opacity:.55; }
+.rd-line .row { flex-wrap:nowrap; align-items:baseline; } .rd-line .ms { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 0; min-width:0; }
+.rd-line .lb1 { color:var(--ink-2); margin-right:20px; padding:1px 0; border-bottom:2px solid transparent; } .rd-line .lb1:hover { color:var(--ink); border-bottom-color:var(--rule); } .rd-line .lb1.weak { opacity:.55; } .rd-line .lb1[disabled] { opacity:.4; cursor:default; }
+.rd-line .hint { flex:none; color:var(--ink-3); font-size:12px; font-weight:600; letter-spacing:.02em; margin-right:18px; }
+.lb { position:relative; flex:none; margin-right:22px; } .lb > summary { list-style:none; cursor:pointer; font-weight:700; color:var(--c); white-space:nowrap; } .lb > summary::-webkit-details-marker { display:none; }
+.lb > summary::after { content:" \25BE"; color:var(--ink-3); font-weight:400; }
+.lb-menu { position:absolute; z-index:30; top:calc(100% + 8px); left:-12px; display:grid; min-width:170px; padding:6px; border-radius:10px; background:var(--panel); border:1px solid var(--rule); box-shadow:0 18px 40px -18px rgba(var(--sh),.7); }
+.lb-menu button { text-align:left; padding:6px 10px; border-radius:6px; font-size:13.5px; color:var(--ink-2); white-space:nowrap; } .lb-menu button:hover { background:var(--bg); color:var(--ink); }
+.lb-menu button[aria-pressed="true"] { color:var(--c); font-weight:700; } .lb-menu button.weak { opacity:.55; } .lb-menu button[disabled] { opacity:.4; cursor:default; } .lb-menu hr { border:0; border-top:1px solid var(--rule); margin:5px 4px; }
+.rd-line .ar { color:var(--ink-3); margin:0 10px; font-size:14px; }
+.rd-line .all { color:var(--ink-3); font-size:12px; margin-left:14px; } .rd-line .all:hover { color:var(--ink); }
+.rd-toc { display:flex; flex-wrap:wrap; gap:6px 22px; padding:0 0 14px; margin:0 0 6px; border-bottom:1px solid var(--rule); font-size:13px; }
+.rd-toc button { color:var(--ink-2); font-weight:600; } .rd-toc button:hover { color:var(--c); } .rd-toc small { margin-left:5px; font-weight:500; color:var(--ink-3); font-variant-numeric:tabular-nums; }
+.rd-ch { margin:0; padding:30px 0 8px; display:flex; align-items:baseline; gap:10px; font-size:22px; font-weight:700; letter-spacing:-.035em; scroll-margin-top:16px; }
+.rd-ch small { font-size:12.5px; font-weight:500; letter-spacing:0; color:var(--ink-3); }
+.hb { display:grid; grid-template-columns:52px minmax(0,270px) minmax(0,1fr); gap:4px 18px; align-items:start; width:100%; padding:14px 12px 15px; margin:0 -12px; width:calc(100% + 24px);
+  border-top:1px solid var(--rule); border-radius:6px; text-align:left; transition:background .12s; }
+.rd-ch + .hb { border-top-color:transparent; }
+.hb:hover { background:var(--panel); border-top-color:transparent; } .hb:hover + .hb { border-top-color:transparent; }
+.hb-x { font-size:17px; font-weight:700; letter-spacing:-.03em; color:var(--c); font-variant-numeric:tabular-nums; line-height:1.25; }
+.hb-n { font-size:16px; font-weight:650; letter-spacing:-.02em; line-height:1.25; color:var(--ink); }
+.hb-r { grid-column:2; display:grid; gap:3px; margin-top:7px; max-width:230px; }
+.hb-r i { display:block; height:5px; min-width:2px; border-radius:3px; background:var(--muted); } .hb-r i.me { background:var(--c); }
+.hb-q { grid-column:3; grid-row:1 / span 2; margin:0; font-size:14.5px; line-height:1.45; color:var(--ink-2); }
+.hb-q q { quotes:"\201C" "\201D"; font-style:italic; color:var(--ink); }
+.hb-q cite { display:block; margin-top:4px; font-style:normal; font-size:12px; color:var(--ink-3); }
+.hb.solo .hb-x, .hb.solo .hb-n { opacity:.8; }
+.rd-like { display:grid; gap:4px; padding:4px 6px 0; }
+.rd-like h3 { margin:0 0 4px; font-size:12px; font-weight:600; color:var(--ink-3); letter-spacing:.02em; }
+.rd-like button { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:2px 8px; padding:5px 7px; margin:0 -7px; border-radius:4px; font-size:13px; color:var(--ink-2); }
+.rd-like button span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .rd-like button em { font-style:normal; color:var(--ink-3); font-size:11.5px; }
+.rd-like button i { grid-column:1 / -1; height:4px; border-radius:2px; background:var(--k); }
+.rd-like button:hover { background:var(--panel); color:var(--ink); }
+@media (max-width:1100px) { .hb { grid-template-columns:48px minmax(0,1fr); } .hb-q { grid-column:2; grid-row:auto; margin-top:8px; } }
+@media (max-width:700px) { .rd-line .lab { flex-basis:100%; } .rd-ch { font-size:19px; padding-top:22px; } .hb-n { font-size:15px; } }
 </style>
 </head>
 <body>
@@ -713,7 +763,7 @@ var SNAME = { holistic: 'Whole text', ideas: 'Ideas', prose: 'Prose' };
 var DOM = { stories: 'story', news: 'news article', opeds: 'op-ed' };
 var GOLD = { OpenAI: 'GPT', Anthropic: 'Claude', Google: 'Gemini' };
 var RAR = { 1: '○', 2: '●', 3: '◆', 4: '★' };
-function defaultState() { return { sec: 'holistic', view: 'all', open: null, solo: false, right: true, page: 'models', judge: null, fam: 'GPT' }; }
+function defaultState() { return { sec: 'holistic', view: 'fable', open: null, solo: false, right: true, page: 'models', judge: null, fam: 'GPT' }; }
 var st = defaultState();
 var keep = null;   // the Models view's state while the Judges view borrows view/open/right
 
@@ -1450,7 +1500,7 @@ function sethash() {   // #family/section/judge/clues, then m=models and t=trait
   if (st.page === 'compare') { var ch = '#' + ['compare', st.sec, st.view, st.right ? 'right' : 'all-clues', 'a=' + st.a, 'b=' + st.b].join('/');
     if (location.hash !== ch) history.replaceState(null, '', location.pathname + location.search + ch); return; }
   var jp = st.page === 'judges', p = picked();
-  var plain = !jp && st.sec === 'holistic' && st.view === 'all' && st.right && !st.solo, ex = jp ? [] : (p ? ['m=' + p.map(mslug).join(',')] : []).concat(st.trait ? ['t=' + st.trait] : []);
+  var plain = !jp && st.sec === 'holistic' && st.view === 'fable' && st.right && !st.solo, ex = jp ? [] : (p ? ['m=' + p.map(mslug).join(',')] : []).concat(st.trait ? ['t=' + st.trait] : []);
   var isHome = plain && !st.open;
   var hash = isHome ? '' : '#' + (jp ? ['judges', st.sec, st.judge || 'all', st.fam, keep && !keep.right ? 'all-clues' : 'right'] :
     (plain && ex.length ? [st.open] : [st.open || 'deck', st.sec, st.view, st.right ? 'right' : 'all-clues']).concat(ex)).join('/');
@@ -1877,6 +1927,84 @@ if (hx.t && st.open && st.page === 'models') {   // a trait's own link: its card
   var hf = S().feats.find(function (f) { return slug(f) === hx.t || f.id === hx.t; });
   if (hf) { if (sig(G.indexOf(st.open)).indexOf(hf) < 0 && !picked()) { st.solo = true; render(); } show(hf); }
 }
+
+// --- prototype: the profile as a read (overrides detail) ---
+function cats() { return { ideas: 'What it writes about', structure: 'How it builds a piece', rhetoric: 'How it argues', stance: 'Where it stands', wording: 'Word choice',
+  formatting: 'Punctuation and layout', language: 'Fluency and register', facts: 'Facts and sources', other: 'Other' }; }
+function mon3(d) { var m = /^(\d{4})-(\d{2})/.exec(d || ''); return m ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + m[1] : ''; }
+function here(gi) {   // what is on the page, as something Compare knows: the family, or the picked model or lab
+  var p = picked(); if (!p) return ent(G[gi].toLowerCase());
+  var L = curlab(gi); if (L && L.whole && p.length > 1) return ents().filter(function (e) { return e.kind === 'lab' && e.ms.indexOf(p[0]) >= 0; })[0];
+  return ents().filter(function (e) { return e.ms.length === p.length && e.ms.every(function (i) { return p.indexOf(i) >= 0; }); })[0];
+}
+function curlab(gi) {   // the one lab every picked model belongs to, if any
+  var p = picked(); if (!p) return null;
+  var x = labs(gi).filter(function (x) { return p.every(function (i) { return x.ms.indexOf(i) >= 0; }); })[0]; if (!x) return null;
+  x.whole = x.ok.length === p.length; return x;
+}
+function lineage(gi) {   // one line: a lab's models in release order. Several labs: pick the lab, its models open to the right
+  var p = picked(), cur = curlab(gi), L = labs(gi).filter(function (x) { return x.lab !== 'xAI' || x === cur; }), multi = labs(gi).length > 1;   // xAI is left out of the lab picker; Compare still has it
+  function mb(i) {
+    var m = D.models[i], ok = mok(gi, i), n = one(gi, i).n.all[gi], on = p && p.indexOf(i) >= 0 && !(multi && cur && cur.whole && p.length > 1);
+    return '<button class="m' + (ok || !st.right ? '' : ' weak') + '" data-m1="' + i + '" aria-pressed="' + !!on + '"' + (ok ? '' : st.right ? ' data-weak="1"' : ' disabled') +
+      ' data-def="' + esc((mon3(m[3]) ? mon3(m[3]) + '. ' : '') + fmt(n) + ' clues in its texts' + (ok ? '' : st.right ? ' from right guesses. Click to see all clues' : ', too few to show')) + '">' + esc(m[0]) + '</button>';
+  }
+  function line(x) { return '<span class="ms">' + x.ms.slice().sort(function (a, b) { return (D.models[a][3] || '9') < (D.models[b][3] || '9') ? -1 : 1; }).map(mb).join('<span class="ar">→</span>') + '</span>'; }
+  function lbtn(x, cls) { return '<button class="' + cls + (x.ok.length || !st.right ? '' : ' weak') + '" data-lab1="' + esc(x.lab) + '" aria-pressed="' + (x === cur) + '"' + (x.ok.length ? '' : st.right ? ' data-weak="1"' : ' disabled') + '>' + esc(x.lab) + '</button>'; }
+  if (!multi) return '<div class="rd-line"><div class="row">' + line(L[0]) + (p ? '<button class="all" data-m1="all">show all</button>' : '') + '</div></div>';
+  if (!cur) return '<div class="rd-line"><div class="row"><span class="hint">Pick a lab</span><span class="ms">' + L.map(function (x) { return lbtn(x, 'lb1'); }).join('') + '</span></div></div>';
+  return '<div class="rd-line"><div class="row"><details class="lb"><summary>' + esc(cur.lab) + '</summary><div class="lb-menu"><button data-m1="all">All labs</button><hr>' + L.map(function (x) { return lbtn(x, ''); }).join('') + '</div></details>' + line(cur) + '</div></div>';
+}
+function ctitle(html, gi) {   // the card is named for what is on the page: the family, the picked lab, or the one model
+  var p = picked(), L = curlab(gi), n = !p ? '' : p.length === 1 ? D.models[p[0]][0] : L && L.whole && labs(gi).length > 1 ? L.lab : '';
+  return n ? html.replace('<span class="tc-name">' + GNAME[G[gi]] + '</span>', '<span class="tc-name"' + (n.length > 14 ? ' style="font-size:20px"' : '') + '>' + esc(n) + '</span>') : html;
+}
+function alike(gi) {
+  var A = here(gi); if (!A) return '';
+  var top = near(cdata(), A).slice(0, 4); if (!top.length) return '';
+  var mx = Math.max.apply(null, top.map(function (x) { return x.s; }).concat([.01]));
+  return '<div class="rd-like"><h3>Writes most like</h3>' + top.map(function (x) {
+    return '<button data-vs="' + x.e.k + '" data-va="' + A.k + '" style="--k:var(--' + G[x.e.gi] + ')" data-def="Put ' + esc(A.name) + ' side by side with ' + esc(x.e.name) + '"><span>' + esc(x.e.name) + '</span><em>' + x.s.toFixed(2) + '</em>' +
+      '<i style="width:' + Math.max(4, 100 * x.s / mx).toFixed(0) + '%"></i></button>'; }).join('') + '</div>';
+}
+function habit(f, gi, cls) {
+  var h = f.has[st.view], n = S().n[st.view], me = n[gi] ? h[gi] / n[gi] : 0, oh = 0, on = 0;
+  h.forEach(function (x, k) { if (k !== gi) { oh += x; on += n[k]; } });
+  var ot = on ? oh / on : 0, mx = Math.max(me, ot) || 1, who = picked() ? mlabel() : GNAME[G[gi]];
+  var qs = quotes(f, gi), sh = qs.filter(function (qi) { return QQ(qi)[1].length < 190; }), q = qs.length ? QQ((sh.length ? sh : qs)[0]) : null, t = q ? clean(q[1]) : '';
+  if (t.length > 230) t = t.slice(0, 220).replace(/\s+\S*$/, '') + '…';
+  var wm = q ? D.models[wmi(q)] : null;
+  return '<button class="hb ' + (cls || '') + '" data-f="' + esc(f.id) + '" data-def="' + esc(f.def) + '" data-lab="' + esc(lab(f)) + '">' +
+    '<span class="hb-x" data-def="' + esc(xdef(f, gi)) + '">' + lift(f, gi) + '</span><span class="hb-n">' + esc(short(f)) + '</span>' +
+    '<span class="hb-r" data-def="' + esc(who + ': ' + cpc(me) + ' of the clues in its texts. Everyone else: ' + cpc(ot)) + '"><i class="me" style="width:' + (100 * me / mx).toFixed(0) + '%"></i><i style="width:' + (100 * ot / mx).toFixed(0) + '%"></i></span>' +
+    (q ? '<span class="hb-q"><q>' + esc(t) + '</q><cite>' + JNAME[JA[q[0]]] + ', reading ' + esc(aan(DOM[q[4]] || q[4])) + (wm ? ' by ' + esc(wm[0]) : '') + '</cite></span>' : '') + '</button>';
+}
+var LAY = 'list'; try { if (localStorage.getItem('mp-lay') === 'grid') LAY = 'grid'; } catch (e) {}
+function detail(g) {
+  var gi = G.indexOf(g), feats = sig(gi), one1 = st.view === 'all' ? solo(gi) : [], order = [], by = {}, CATS = cats();
+  feats.forEach(function (f) { var c = CATS[f.cat] ? f.cat : 'other'; if (!by[c]) { by[c] = []; order.push(c); } by[c].push(f); });
+  return '<section class="detail" style="--c:var(--' + g + ')"><div class="side"><button class="back" data-back="1">← All cards</button>' + ctitle(card(gi), gi) + alike(gi) + '</div>' +
+    '<div class="rd' + (LAY === 'grid' ? ' grid' : '') + '"><div class="rd-top">' + lineage(gi) + '<div class="rd-lay" role="group" aria-label="Layout"><button data-lay="list" aria-pressed="' + (LAY === 'list') + '">List</button><button data-lay="grid" aria-pressed="' + (LAY === 'grid') + '">Grid</button></div></div>' +
+    (picked() && !feats.length ? '<p class="none">' + (st.right ? 'Too few clues from right guesses for ' + esc(mlabel()) + ': the judges rarely recognized its texts. All clues has them.' : 'Too few clues for ' + esc(mlabel()) + '.') + '</p>' : '') +
+    order.map(function (c) { return '<h2 class="rd-ch" id="ch-' + c + '">' + CATS[c] + '<small>' + by[c].length + '</small></h2>' + (LAY === 'grid' ? '<div class="spread">' + by[c].map(function (f, i) { return mini(f, gi, i); }).join('') + '</div>' : by[c].map(function (f) { return habit(f, gi); }).join('')); }).join('') +
+    (st.solo && one1.length ? '<h2 class="rd-ch">Noted by one judge<small>' + one1.length + '</small></h2>' + (LAY === 'grid' ? '<div class="spread">' + one1.slice(0, 80).map(function (f, i) { return mini(f, gi, i, 'solo'); }).join('') + '</div>' : one1.slice(0, 80).map(function (f) { return habit(f, gi, 'solo'); }).join('')) : '') +
+    (one1.length && !st.solo ? '<button class="more" data-solo="1" style="margin-top:22px">+ ' + one1.length + ' seen by one judge</button>' : '') + '</div></section>';
+}
+document.addEventListener('click', function (e) {
+  var lb = document.querySelector('.lb[open]'); if (lb && !(e.target.closest && e.target.closest('.lb > summary'))) lb.open = false;
+  var b = e.target.closest && e.target.closest('[data-vs],[data-jump],[data-lay],[data-m1],[data-lab1]'); if (!b || b.disabled) return;
+  if (b.dataset.lab1) { if (b.dataset.weak) st.right = false; st.pick = labs(G.indexOf(st.open)).filter(function (x) { return x.lab === b.dataset.lab1; })[0].ok.slice(); npick(); return; }
+  if (b.dataset.m1) {   // a model: on its own first, then each click adds or drops one; none left is the whole lab again
+    var gi = G.indexOf(st.open), i = +b.dataset.m1, L = curlab(gi), multi = labs(gi).length > 1, cur = picked();
+    if (b.dataset.m1 === 'all') st.pick = null;
+    else if (b.dataset.weak) { st.right = false; st.pick = [i]; }
+    else if (!cur || (multi && L && L.whole && cur.length > 1)) st.pick = [i];
+    else { st.pick = cur.indexOf(i) >= 0 ? cur.filter(function (x) { return x !== i; }) : cur.concat([i]); if (!st.pick.length) st.pick = multi && L ? L.ok.slice() : null; }
+    npick(); return; }
+  if (b.dataset.lay) { LAY = b.dataset.lay; try { localStorage.setItem('mp-lay', LAY); } catch (x) {} render(); return; }
+  if (b.dataset.jump) { var el = document.getElementById(b.dataset.jump); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+  st.a = b.dataset.va; st.b = b.dataset.vs; st.page = 'compare'; st.right = false; st.open = null; st.pick = null; st.unf = null; st.solo = false; render(); window.scrollTo(0, 0);
+});
 })();
 </script>
 </body>
