@@ -748,13 +748,11 @@ body { font-kerning:normal; -webkit-font-smoothing:antialiased; -moz-osx-font-sm
 .du-bar button.a { background:var(--ca); } .du-bar button.b { background:var(--cb); } .du-bar button.both { background:linear-gradient(90deg,var(--ca),var(--cb)); }
 .du-bar button:hover { filter:brightness(1.12); }
 .du-rows { flex:1; display:flex; flex-direction:column; justify-content:space-between; gap:2px; position:relative; }
-.du-rows::before { content:""; position:absolute; left:50%; top:0; bottom:0; width:1px; background:var(--rule); }
-.du-rows button { position:relative; display:grid; grid-template-columns:1fr 1fr; gap:4px 0; padding:5px 0 6px; border-radius:4px; text-align:center; font-size:12.5px; line-height:1.25; color:var(--ink-2); animation:du-in .45s cubic-bezier(.2,.7,.2,1) both; animation-delay:calc(var(--i) * 28ms); }
-.du-rows button span { grid-column:1 / -1; justify-self:center; padding:0 8px; background:var(--panel); position:relative; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%; }
-.du-rows button i { display:flex; height:9px; } .du-rows button i.l { justify-content:flex-end; }
-.du-rows button u { height:100%; text-decoration:none; transition:width .35s cubic-bezier(.2,.7,.2,1); }
-.du-rows .l u { background:var(--ca); border-radius:5px 0 0 5px; } .du-rows .r u { background:var(--cb); border-radius:0 5px 5px 0; }
-.du-rows button:hover { background:var(--panel-2); color:var(--ink); } .du-rows button:hover span { background:var(--panel-2); }
+.du-rows button { position:relative; display:grid; gap:5px; padding:5px 0 7px; border-radius:4px; text-align:center; font-size:12.5px; line-height:1.25; color:var(--ink-2); animation:du-in .45s cubic-bezier(.2,.7,.2,1) both; animation-delay:calc(var(--i) * 28ms); }
+.du-rows button span { justify-self:center; padding:0 8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%; }
+.du-rows button i { position:relative; display:block; height:10px; border-radius:5px; background:linear-gradient(90deg,var(--ca) calc(var(--s) - 1px),var(--panel) calc(var(--s) - 1px),var(--panel) calc(var(--s) + 1px),var(--cb) calc(var(--s) + 1px)); }
+.du-rows button i::after { content:""; position:absolute; left:50%; top:-3px; bottom:-3px; width:2px; margin-left:-1px; border-radius:1px; background:var(--ink); opacity:.55; }
+.du-rows button:hover { background:var(--panel-2); color:var(--ink); }
 .du-rows button.a span { color:var(--ca); font-weight:600; } .du-rows button.b span { color:var(--cb); font-weight:600; } .du-rows button.both span { color:var(--ink); font-weight:600; }
 .du-none { margin:auto; font-size:13px; color:var(--ink-3); }
 .cmp-cols > div { scroll-margin-top:20px; } .cmp-cols > div.flash h3 { animation:du-flash 1.4s ease-out; }
@@ -1466,18 +1464,17 @@ function vcard(side, E, O, rows, d) {   // one side as a card: the family's crea
     '<ul class="moves">' + rows.slice(0, 3).map(function (r) { return '<li class="mv" data-def="' + esc(r.f.def) + '" data-lab="' + esc(lab(r.f)) + '"><b>' + esc(short(r.f)) + '</b><em>' + xp(r.pow) + '</em></li>'; }).join('') + '</ul>' +
     '<div class="tc-foot"><span data-def="' + CLUE + '">' + fmt(n) + ' clues</span><span>' + (E.ms.length > 1 ? E.ms.length + ' models' : esc(E.lab === 'Google' && E.gi === 3 ? 'Google (Gemma)' : E.lab)) + '</span></div></div></div>';
 }
-function duel(d, A, B, L) {   // the pair head to head: one row a trait, a bar left for A and right for B, both from the same spine
+function duel(d, A, B, L) {   // the pair head to head: one row a trait, one bar split by each side's share of it
   var nA = csum(d.n, A.ms), nB = csum(d.n, B.ms), tot = L.a.length + L.both.length + L.b.length;
   function tm(r, n) { return n ? (100 * r).toFixed(r >= .1 ? 0 : 1) + '% of its clues' : 'none'; }
   var rows = L.a.slice(0, 3).map(function (r) { return [r, 'a']; }).concat(L.both.slice(0, 3).map(function (r) { return [r, 'both']; }), L.b.slice(0, 3).map(function (r) { return [r, 'b']; }));
-  var mx = Math.max.apply(null, rows.map(function (x) { return Math.max(x[0].ra, x[0].rb); }).concat([1e-9]));
-  function W(v) { return v ? Math.max(1.5, 100 * Math.sqrt(v / mx)).toFixed(1) : 0; }
+  function S(r) { return (100 * r.ra / (r.ra + r.rb)).toFixed(1); }   // A's share of the two rates, straight scale: the split sits where the pull is
   function seg(k, n, name) { return n ? '<button class="' + k + '" data-czone="' + k + '" style="flex-grow:' + n + '" aria-label="' + esc(name) + ': ' + n + ' traits"><b>' + n + '</b></button>' : ''; }
   return '<div class="du du-tape"><div class="du-split"><span class="a">' + esc(sname(A)) + '</span><div class="du-bar">' +
     (tot ? seg('a', L.a.length, 'More ' + A.name) + seg('both', L.both.length, 'Both') + seg('b', L.b.length, 'More ' + B.name) : '') + '</div><span class="b">' + esc(sname(B)) + '</span></div>' +
     (rows.length ? '<div class="du-rows">' + rows.map(function (x, i) { var r = x[0];
       return '<button class="' + x[1] + '" data-cf="' + esc(r.f.id) + '" style="--i:' + i + '" data-lab="' + esc(short(r.f)) + '" data-def="' + esc(A.name + ': ' + tm(r.ra, r.a) + '. ' + B.name + ': ' + tm(r.rb, r.b)) + '">' +
-        '<span>' + esc(short(r.f)) + '</span><i class="l"><u style="width:' + W(r.ra) + '%"></u></i><i class="r"><u style="width:' + W(r.rb) + '%"></u></i></button>'; }).join('') + '</div>' :
+        '<span>' + esc(short(r.f)) + '</span><i style="--s:' + S(r) + '%"></i></button>'; }).join('') + '</div>' :
       '<p class="du-none">Too few clues' + (st.right ? ' from right guesses' : '') + '</p>') + '</div>';
 }
 function sname(e) { return e.kind === 'model' && e.name.length > 9 ? e.name.replace(/^\S+ /, '') : e.name; }   // under a bar: "Opus 5.5"
