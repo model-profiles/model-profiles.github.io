@@ -1874,7 +1874,7 @@ function render() {
   if (jp) { st.view = st.judge || 'all'; st.open = st.judge ? st.fam : null; st.right = false; st.solo = false; }
   document.getElementById('crumb').innerHTML = jp ? (st.judge ? '<button class="backlink" data-jback="1">← All judges</button>' : '<button class="backlink" data-page="models">← Model Profiles</button>') :
     cp ? '<button class="backlink" data-page="models">← Model Profiles</button>' : st.open ? '<button class="backlink" data-back="1">← All cards</button>' :
-    '<a class="backlink" href="https://atreydesai.com/blog/who-wrote-this/">Who wrote this? ↗</a>';
+    '<a class="backlink" href="https://atreydesai.com/blog/who-wrote-this/">← Who wrote this?</a>';
   document.getElementById('page').innerHTML = '<button data-page="models"' + (jp ? '' : ' aria-current="page"') + '>Model Profiles</button>' +
     '<button data-page="judges"' + (jp ? ' aria-current="page"' : '') + '>Judge Profiles</button>' +
     '<button data-page="compare"' + (cp ? ' aria-current="page"' : '') + '>Compare Models</button>';
