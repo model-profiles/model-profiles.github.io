@@ -786,8 +786,9 @@ function fmodels(gi) {   // a family's models: by lab, then release
   return D.models.map(function (m, i) { return i; }).filter(function (i) { return D.models[i][2] === gi; })
     .sort(function (a, b) { var x = D.models[a], y = D.models[b]; return gi === 3 && x[1] !== y[1] ? (x[1] < y[1] ? -1 : 1) : (x[3] || '9') < (y[3] || '9') ? -1 : (x[3] || '9') > (y[3] || '9') ? 1 : 0; });
 }
+function lmodels(gi) { return fmodels(gi).filter(function (i) { return D.models[i][1] !== 'xAI'; }); }   // the models a page lists: Grok is not open-weight, so it is not listed; its texts stay in the family's counts
 function mlabel() { var p = picked(), L = labs(G.indexOf(st.open)).filter(function (x) { return x.ok.length > 1 && x.ok.length === p.length && x.ok.every(function (i) { return p.indexOf(i) >= 0; }); });
-  return p.length === 1 ? D.models[p[0]][0] : L.length ? L[0].lab + ' models' : p.length + ' of ' + fmodels(G.indexOf(st.open)).length + ' models'; }
+  return p.length === 1 ? D.models[p[0]][0] : L.length ? L[0].lab + ' models' : p.length + ' of ' + lmodels(G.indexOf(st.open)).length + ' models'; }
 var DV = {}, FS = {};
 function mcv(right) { return MC.by[right ? 'right' : 'all']; }
 function fsum(sec, right) {   // the by-writer counts summed per family: {n:{judge:[4]}, f:{trait:{judge:[4]}}}
@@ -854,7 +855,7 @@ function whas(f, gi) { return J.reduce(function (t, j) { return t + W(j) * f.has
 function mok(gi, i) { return one(gi, i).feats.some(function (f) { return f.pool; }); }   // enough clues to show on its own
 function labs(gi) {   // the family's labs, each with its models
   var o = [], by = {};
-  fmodels(gi).forEach(function (i) { var l = D.models[i][1]; if (!by[l]) o.push(by[l] = { lab: l, ms: [] }); by[l].ms.push(i); });
+  lmodels(gi).forEach(function (i) { var l = D.models[i][1]; if (!by[l]) o.push(by[l] = { lab: l, ms: [] }); by[l].ms.push(i); });
   o.forEach(function (x) { x.ok = x.ms.filter(function (i) { return mok(gi, i); }); });
   return o;
 }
@@ -864,7 +865,7 @@ function mchip(gi, i, p) {
     ' data-def="' + esc(m[1] + (m[3] ? ', ' + m[3] : '') + '. ' + (ok ? fmt(n) + ' clues in its texts' : st.right ? 'Only ' + fmt(n) + ' clues from right guesses: the judges rarely named its texts as ' + GNAME[G[gi]] + '. Click to see all clues' : 'Only ' + fmt(n) + ' clues')) + '">' + esc(m[0]) + '</button>';
 }
 function chips(gi) {   // one lab: its models. Several labs (open-weight): a chip per lab, its models behind the arrow
-  var ms = fmodels(gi), p = picked(), L = labs(gi), cmp = '<button class="cmpb" data-cmp="1" data-def="Put ' + esc(p ? mlabel() : GNAME[G[gi]]) + ' side by side with another model or lab">Compare</button>';
+  var ms = lmodels(gi), p = picked(), L = labs(gi), cmp = '<button class="cmpb" data-cmp="1" data-def="Put ' + esc(p ? mlabel() : GNAME[G[gi]]) + ' side by side with another model or lab">Compare</button>';
   var all = '<button data-pick="all" aria-pressed="' + !p + '">All ' + ms.length + ' models</button>';
   if (L.length < 2) return '<div class="chips' + (p ? ' some' : '') + '" role="group" aria-label="Models">' + all + ms.map(function (i) { return mchip(gi, i, p); }).join('') + cmp + '</div>';
   var open = L.filter(function (x) { return x.lab === st.unf; })[0];
@@ -1349,8 +1350,8 @@ function ents() {   // what can be compared: the four families, the open-weight 
   if (ENTS) return ENTS;
   var o = [], by = {};
   G.forEach(function (g, gi) { o.push({ k: g.toLowerCase(), name: GNAME[g], gi: gi, ms: fmodels(gi), kind: 'fam' }); });
-  fmodels(3).forEach(function (i) { var l = D.models[i][1]; if (!by[l]) o.push(by[l] = { k: 'lab-' + l.toLowerCase().replace(/[^a-z0-9]+/g, '-'), name: l === 'Google' ? 'Google (Gemma)' : l, gi: 3, ms: [], kind: 'lab' }); by[l].ms.push(i); });
-  G.forEach(function (g, gi) { fmodels(gi).forEach(function (i) { o.push({ k: mslug(i), name: D.models[i][0], gi: gi, ms: [i], kind: 'model', lab: D.models[i][1] }); }); });
+  lmodels(3).forEach(function (i) { var l = D.models[i][1]; if (!by[l]) o.push(by[l] = { k: 'lab-' + l.toLowerCase().replace(/[^a-z0-9]+/g, '-'), name: l === 'Google' ? 'Google (Gemma)' : l, gi: 3, ms: [], kind: 'lab' }); by[l].ms.push(i); });
+  G.forEach(function (g, gi) { lmodels(gi).forEach(function (i) { o.push({ k: mslug(i), name: D.models[i][0], gi: gi, ms: [i], kind: 'model', lab: D.models[i][1] }); }); });
   return (ENTS = o);
 }
 function ent(k) { return ents().filter(function (e) { return e.k === k; })[0]; }
@@ -1663,6 +1664,7 @@ function wlabel(i, n) {   // writer row: lab (first of its lab only), model and 
 function wrows(body) {   // body(row) -> [mark html, right-hand note]; rows without articles are left out
   var R = D.jp[st.sec].mix.rows;
   return R.map(function (r, i) {
+    if (r[1] === 'xAI') return '';   // Grok is not listed
     var b = body(i); if (!b) return '';
     return '<div class="wr-row' + (!r[1] ? ' ref' : R[i - 1][1] && R[i - 1][1] !== r[1] ? ' lab0' : '') + '">' + wlabel(i) + b[0] + '<span class="wr-n">' + b[1] + '</span></div>';
   }).join('');
@@ -1730,7 +1732,7 @@ function panel(P, mi) {
     '<svg viewBox="0 0 ' + W + ' ' + H + '" style="height:' + H + 'px" preserveAspectRatio="xMidYMin meet">' + g + '</svg></div>';
 }
 function models() {
-  var P = profiles(), labs = [['Anthropic'], ['OpenAI'], ['Google'], ['Moonshot'], ['Zhipu'], ['Alibaba'], ['DeepSeek', 'MiniMax'], ['xAI', 'Mistral', 'Cohere']];
+  var P = profiles(), labs = [['Anthropic'], ['OpenAI'], ['Google'], ['Moonshot'], ['Zhipu'], ['Alibaba'], ['DeepSeek', 'MiniMax'], ['Mistral', 'Cohere']];
   var lab = '<div class="pm-lab"><div class="pm-hd">Mean</div>' + P.rows.map(function (r, q) {
     return '<p class="' + (q && q % 3 === 0 ? 'g0' : '') + '"><i style="background:var(--' + G[r.gi] + ')"></i><span title="' + esc(short(r.f)) + '">' + esc(short(r.f)) + '</span><em>' + Math.round(P.mean[q]) + '%</em></p>';
   }).join('') + '</div>';
@@ -1920,7 +1922,7 @@ if (h[2] === 'all' || J.indexOf(h[2]) >= 0) st.view = h[2];
 if ((h[0] === 'deck' || G.indexOf(h[0]) >= 0) && h[3] === 'all-clues') st.right = false;
 if (h[0] === 'compare') { st.page = 'compare'; st.right = h[3] === 'right'; st.a = hx.a; st.b = hx.b; }
 if (h[0] === 'judges') { if (h[4] === 'all-clues') st.right = false; page('judges'); if (J.indexOf(h[2]) >= 0) st.judge = h[2]; if (G.indexOf(h[3]) >= 0) st.fam = h[3]; }
-if (hx.m && st.open && st.page === 'models') { var hm = fmodels(G.indexOf(st.open)); st.pick = hm.filter(function (i) { return hx.m.split(',').indexOf(mslug(i)) >= 0; }); if (!st.pick.length) st.pick = null;
+if (hx.m && st.open && st.page === 'models') { var hm = lmodels(G.indexOf(st.open)); st.pick = hm.filter(function (i) { return hx.m.split(',').indexOf(mslug(i)) >= 0; }); if (!st.pick.length) st.pick = null;
   if (st.pick) labs(G.indexOf(st.open)).forEach(function (x) { var k = x.ok.filter(function (i) { return st.pick.indexOf(i) >= 0; }).length; if (k && k < x.ok.length && !st.unf) st.unf = x.lab; }); }
 render();
 if (hx.t && st.open && st.page === 'models') {   // a trait's own link: its card opens; one that is seen by one judge only is in the longer list
