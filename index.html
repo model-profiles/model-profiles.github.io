@@ -738,6 +738,29 @@ body { font-kerning:normal; -webkit-font-smoothing:antialiased; -moz-osx-font-sm
 .rd-like button:hover { background:var(--panel); color:var(--ink); }
 @media (max-width:1100px) { .hb { grid-template-columns:48px minmax(0,1fr); } .hb-q { grid-column:2; grid-row:auto; margin-top:8px; } }
 @media (max-width:700px) { .rd-line .lab { flex-basis:100%; } .rd-ch { font-size:19px; padding-top:22px; } .hb-n { font-size:15px; } }
+
+/* compare: head-to-head tape in place of the scatter */
+.du.du-tape { display:flex; flex-direction:column; gap:18px; padding:20px 22px 20px; }
+.du-split { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:12px; align-items:center; font-size:15px; font-weight:700; letter-spacing:-.025em; }
+.du-split > span { color:var(--c); white-space:nowrap; }
+.du-bar { display:flex; gap:2px; height:22px; border-radius:11px; overflow:hidden; background:var(--panel-2); }
+.du-bar button { flex:1 1 0; min-width:26px; display:grid; place-items:center; font-size:11.5px; font-weight:600; color:#fff; padding:0; font-variant-numeric:tabular-nums; transition:filter .12s; }
+.du-bar button.a { background:var(--ca); } .du-bar button.b { background:var(--cb); } .du-bar button.both { background:linear-gradient(90deg,var(--ca),var(--cb)); }
+.du-bar button:hover { filter:brightness(1.12); }
+.du-rows { flex:1; display:flex; flex-direction:column; justify-content:space-between; gap:2px; position:relative; }
+.du-rows::before { content:""; position:absolute; left:50%; top:0; bottom:0; width:1px; background:var(--rule); }
+.du-rows button { position:relative; display:grid; grid-template-columns:1fr 1fr; gap:4px 0; padding:5px 0 6px; border-radius:4px; text-align:center; font-size:12.5px; line-height:1.25; color:var(--ink-2); animation:du-in .45s cubic-bezier(.2,.7,.2,1) both; animation-delay:calc(var(--i) * 28ms); }
+.du-rows button span { grid-column:1 / -1; justify-self:center; padding:0 8px; background:var(--panel); position:relative; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%; }
+.du-rows button i { display:flex; height:9px; } .du-rows button i.l { justify-content:flex-end; }
+.du-rows button u { height:100%; text-decoration:none; transition:width .35s cubic-bezier(.2,.7,.2,1); }
+.du-rows .l u { background:var(--ca); border-radius:5px 0 0 5px; } .du-rows .r u { background:var(--cb); border-radius:0 5px 5px 0; }
+.du-rows button:hover { background:var(--panel-2); color:var(--ink); } .du-rows button:hover span { background:var(--panel-2); }
+.du-rows button.a span { color:var(--ca); font-weight:600; } .du-rows button.b span { color:var(--cb); font-weight:600; } .du-rows button.both span { color:var(--ink); font-weight:600; }
+.du-none { margin:auto; font-size:13px; color:var(--ink-3); }
+.cmp-cols > div { scroll-margin-top:20px; } .cmp-cols > div.flash h3 { animation:du-flash 1.4s ease-out; }
+@keyframes du-in { from { opacity:0; transform:scaleX(.6); } }
+@keyframes du-flash { 0%,35% { background:color-mix(in srgb,var(--c,var(--ink)) 22%,transparent); box-shadow:0 0 0 6px color-mix(in srgb,var(--c,var(--ink)) 22%,transparent); } 100% { background:transparent; box-shadow:0 0 0 6px transparent; } }
+@media (prefers-reduced-motion:reduce) { .du-rows button { animation:none; } }
 </style>
 </head>
 <body>
@@ -1443,23 +1466,19 @@ function vcard(side, E, O, rows, d) {   // one side as a card: the family's crea
     '<ul class="moves">' + rows.slice(0, 3).map(function (r) { return '<li class="mv" data-def="' + esc(r.f.def) + '" data-lab="' + esc(lab(r.f)) + '"><b>' + esc(short(r.f)) + '</b><em>' + xp(r.pow) + '</em></li>'; }).join('') + '</ul>' +
     '<div class="tc-foot"><span data-def="' + CLUE + '">' + fmt(n) + ' clues</span><span>' + (E.ms.length > 1 ? E.ms.length + ' models' : esc(E.lab === 'Google' && E.gi === 3 ? 'Google (Gemma)' : E.lab)) + '</span></div></div></div>';
 }
-function duel(d, A, B, s, nA, L) {   // the pair only: every common trait as a dot, across = how much A does it, up = how much B does it
-  var va = cvec(d, A).v, vb = cvec(d, B).v, R = 2.6, cls = {}, rk = nA.map(function (x) { return x.e; }).indexOf(B);
-  ['a', 'b', 'both'].forEach(function (k) { L[k].forEach(function (r) { cls[r.f.id] = k; }); });
-  function P(v) { return (50 + 45 * Math.max(-1, Math.min(1, v / R))).toFixed(1); }
-  function tm(v) { var x = Math.exp(v); return x >= 1 ? (x >= 10 ? x.toFixed(0) : x.toFixed(1)) + ' times the usual rate' : (1 / x >= 10 ? (1 / x).toFixed(0) : (1 / x).toFixed(1)) + ' times less than usual'; }
-  var dots = s == null ? '' : Object.keys(va).map(function (id) {
-    var f = byId(id); if (!f) return '';
-    return '<button class="' + (cls[id] || '') + '" data-cf="' + esc(id) + '" style="left:' + P(va[id]) + '%;bottom:' + P(vb[id]) + '%" aria-label="' + esc(short(f)) + '"' +
-      ' data-lab="' + esc(short(f)) + '" data-def="' + esc(A.name + ': ' + tm(va[id]) + '. ' + B.name + ': ' + tm(vb[id])) + '"></button>';
-  }).join('');
-  var top = nA.slice(0, 6), mx = Math.max.apply(null, top.map(function (x) { return x.s; }).concat([.01]));
-  return '<div class="du"><div class="du-head"><h2><span class="a">' + esc(A.name) + '</span> × <span class="b">' + esc(B.name) + '</span></h2>' +
-    '<div class="du-s" data-def="' + esc(SIMDEF) + '">' + (s == null ? 'too few clues' + (st.right ? ' from right guesses' : '') : '<b>' + s.toFixed(2) + '</b>alike') + '</div></div>' +
-    '<div class="du-body"><div class="du-plot"><div class="du-sq">' + (s == null ? '' : '<i class="q tr">both</i><i class="q br">more ' + esc(sname(A)) + '</i><i class="q tl">more ' + esc(sname(B)) + '</i><i class="q bl">neither</i>') + dots + '</div></div>' +
-    (top.length ? '<div class="du-near"><h3>Most like ' + esc(A.name) + '</h3>' + top.map(function (x, i) {
-      return '<button data-cset="b" data-ck="' + x.e.k + '" aria-pressed="' + (x.e === B) + '" style="--k:var(--' + G[x.e.gi] + ')" data-def="' + esc(SIMDEF) + '"><span>' + esc(x.e.name) + '</span><em>' + x.s.toFixed(2) + '</em><i style="width:' + Math.max(4, 100 * x.s / mx).toFixed(0) + '%"></i></button>'; }).join('') +
-      (rk >= 6 ? '<p>' + esc(B.name) + ' is #' + (rk + 1) + ' of ' + nA.length + '</p>' : '') + '</div>' : '') + '</div></div>';
+function duel(d, A, B, L) {   // the pair head to head: one row a trait, a bar left for A and right for B, both from the same spine
+  var nA = csum(d.n, A.ms), nB = csum(d.n, B.ms), tot = L.a.length + L.both.length + L.b.length;
+  function tm(r, n) { return n ? (100 * r).toFixed(r >= .1 ? 0 : 1) + '% of its clues' : 'none'; }
+  var rows = L.a.slice(0, 3).map(function (r) { return [r, 'a']; }).concat(L.both.slice(0, 3).map(function (r) { return [r, 'both']; }), L.b.slice(0, 3).map(function (r) { return [r, 'b']; }));
+  var mx = Math.max.apply(null, rows.map(function (x) { return Math.max(x[0].ra, x[0].rb); }).concat([1e-9]));
+  function W(v) { return v ? Math.max(1.5, 100 * Math.sqrt(v / mx)).toFixed(1) : 0; }
+  function seg(k, n, name) { return n ? '<button class="' + k + '" data-czone="' + k + '" style="flex-grow:' + n + '" aria-label="' + esc(name) + ': ' + n + ' traits"><b>' + n + '</b></button>' : ''; }
+  return '<div class="du du-tape"><div class="du-split"><span class="a">' + esc(sname(A)) + '</span><div class="du-bar">' +
+    (tot ? seg('a', L.a.length, 'More ' + A.name) + seg('both', L.both.length, 'Both') + seg('b', L.b.length, 'More ' + B.name) : '') + '</div><span class="b">' + esc(sname(B)) + '</span></div>' +
+    (rows.length ? '<div class="du-rows">' + rows.map(function (x, i) { var r = x[0];
+      return '<button class="' + x[1] + '" data-cf="' + esc(r.f.id) + '" style="--i:' + i + '" data-lab="' + esc(short(r.f)) + '" data-def="' + esc(A.name + ': ' + tm(r.ra, r.a) + '. ' + B.name + ': ' + tm(r.rb, r.b)) + '">' +
+        '<span>' + esc(short(r.f)) + '</span><i class="l"><u style="width:' + W(r.ra) + '%"></u></i><i class="r"><u style="width:' + W(r.rb) + '%"></u></i></button>'; }).join('') + '</div>' :
+      '<p class="du-none">Too few clues' + (st.right ? ' from right guesses' : '') + '</p>') + '</div>';
 }
 function sname(e) { return e.kind === 'model' && e.name.length > 9 ? e.name.replace(/^\S+ /, '') : e.name; }   // under a bar: "Opus 5.5"
 function ctile(r, zone, i, A, B) {
@@ -1473,14 +1492,14 @@ function ctile(r, zone, i, A, B) {
     '<div class="tt-name">' + esc(short(r.f)) + '</div></div></button>';
 }
 function compare() {
-  var c = cpair(), d = c.d, A = c.A, B = c.B, s = csim(d, A, B), L = clists(d, A, B), nA = near(d, A), rk = nA.map(function (x) { return x.e; }).indexOf(B);
+  var c = cpair(), d = c.d, A = c.A, B = c.B, L = clists(d, A, B);
   function zone(k, title, rows) {
     var all = st.cmore === k, cap = all ? 60 : 6;
     return '<div class="' + k + '"><h3>' + title + '<small>' + rows.length + '</small></h3>' + (rows.length ? '<div class="spread">' + rows.slice(0, cap).map(function (r, i) { return ctile(r, k, i, A, B); }).join('') + '</div>' : '<p class="none">Nothing here.</p>') +
       (rows.length > cap ? '<button class="more" data-cmore="' + k + '">+ ' + (rows.length - cap) + ' more</button>' : '') + '</div>';
   }
   return '<section class="cmp" style="--ca:' + ccol(A) + ';--cb:' + ccol(B, A) + '"><div class="cmp-top">' +
-    vcard('a', A, B, L.a, d) + duel(d, A, B, s, nA, L) + vcard('b', B, A, L.b, d) + '</div>' +
+    vcard('a', A, B, L.a, d) + duel(d, A, B, L) + vcard('b', B, A, L.b, d) + '</div>' +
     '<div class="cmp-cols">' + zone('a', 'More ' + esc(A.name), L.a) + zone('both', 'Both', L.both) + zone('b', 'More ' + esc(B.name), L.b) + '</div></section>';
 }
 function cpull(f) {   // a trait on the Compare page: its rate on each side and in the rest, then what the judges wrote about each side's texts
@@ -1898,6 +1917,7 @@ document.addEventListener('click', function (e) {
     st.a = ce ? ce.k : G[cg].toLowerCase(); st.b = null; st.page = 'compare'; st.right = false; st.open = null; st.pick = null; st.unf = null; st.solo = false; render(); window.scrollTo(0, 0); }
   else if (b.dataset.cset) { st[b.dataset.cset] = b.dataset.ck; render(); }
   else if (b.dataset.cmore) { st.cmore = b.dataset.cmore; render(); }
+  else if (b.dataset.czone) { var cz = document.querySelector('.cmp-cols > .' + b.dataset.czone); if (cz) { cz.scrollIntoView({ behavior: 'smooth', block: 'start' }); cz.classList.remove('flash'); void cz.offsetWidth; cz.classList.add('flash'); } }
   else if (b.dataset.cf) { var cm = document.getElementById('modal'); cm.innerHTML = cpull(byId(b.dataset.cf)); cm.hidden = false; if (document.body) document.body.classList.add('lock'); }
   else if (b.dataset.unf) { st.unf = st.unf === b.dataset.unf ? null : b.dataset.unf; render(); }
   else if (b.dataset.solo) { st.solo = true; render(); }
